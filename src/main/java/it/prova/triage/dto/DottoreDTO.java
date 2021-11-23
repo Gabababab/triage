@@ -1,7 +1,6 @@
 package it.prova.triage.dto;
 
 import it.prova.triage.model.Dottore;
-import it.prova.triage.model.Paziente;
 
 public class DottoreDTO {
 
@@ -9,14 +8,14 @@ public class DottoreDTO {
 	private String nome;
 	private String cognome;
 	private String codiceDipendente;
-	private Paziente pazienteAttualmenteInVisita;
+	private PazienteDTO pazienteAttualmenteInVisita;
 
 	public DottoreDTO() {
 		super();
 	}
 
 	public DottoreDTO(Long id, String nome, String cognome, String codiceDipendente,
-			Paziente pazienteAttualmenteInVisita) {
+			PazienteDTO pazienteAttualmenteInVisita) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -33,7 +32,7 @@ public class DottoreDTO {
 		this.codiceDipendente = codiceDipendente;
 	}
 
-	public DottoreDTO(String nome, String cognome, String codiceDipendente, Paziente pazienteAttualmenteInVisita) {
+	public DottoreDTO(String nome, String cognome, String codiceDipendente, PazienteDTO pazienteAttualmenteInVisita) {
 		super();
 		this.nome = nome;
 		this.cognome = cognome;
@@ -51,6 +50,14 @@ public class DottoreDTO {
 
 	public String getNome() {
 		return nome;
+	}
+
+	public PazienteDTO getPazienteAttualmenteInVisita() {
+		return pazienteAttualmenteInVisita;
+	}
+
+	public void setPazienteAttualmenteInVisita(PazienteDTO pazienteAttualmenteInVisita) {
+		this.pazienteAttualmenteInVisita = pazienteAttualmenteInVisita;
 	}
 
 	public void setNome(String nome) {
@@ -74,12 +81,12 @@ public class DottoreDTO {
 	}
 
 	public Dottore buildDottoreModel() {
-		return new Dottore(this.id, this.nome, this.cognome, this.codiceDipendente, this.pazienteAttualmenteInVisita);
+		return new Dottore(this.id, this.nome, this.cognome, this.codiceDipendente, this.pazienteAttualmenteInVisita.buildPazienteModel());
 	}
 
-	public static DottoreDTO buildDottoreDTODTOFromModel(Dottore input) {
+	public static DottoreDTO buildDottoreDTOFromModel(Dottore input) {
 		return new DottoreDTO(input.getId(), input.getNome(), input.getCognome(), input.getCodiceDipendente(),
-				input.getPazienteAttualmenteInVisita());
+			PazienteDTO.buildPazienteDTOFromModel(	input.getPazienteAttualmenteInVisita()));
 	}
 
 }
