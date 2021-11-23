@@ -67,4 +67,5 @@ public class DottoreRestController {
 	public void deleteDottore(@PathVariable(required = true) Long id) {
 		dottoreService.delete(dottoreService.get(id));
 	}
+	
 }
