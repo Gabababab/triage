@@ -47,8 +47,8 @@ public class PazienteServiceImpl implements PazienteService{
 				predicates.add(cb.like(cb.upper(root.get("codiceFiscale")),
 						"%" + pazienteExample.getCodiceFiscale().toUpperCase() + "%"));
 
-			if(pazienteExample.getStato()!=null)
-				predicates.add(cb.isTrue(root.get("stato")));
+			if (!StringUtils.isEmpty(pazienteExample.getStato()))
+			predicates.add(cb.equal(cb.upper(root.get("stato")), pazienteExample.getStato()));
 			
 			if(pazienteExample.getDottore()!=null)
 				predicates.add(cb.isTrue(root.get("dottore")));
