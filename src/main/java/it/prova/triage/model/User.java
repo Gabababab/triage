@@ -17,7 +17,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 @Entity
 @Table(name = "USER")
 public class User {
@@ -38,9 +37,13 @@ public class User {
 	@Email
 	private String email;
 
+	@Column(name = "ENABLED")
+	@NotNull
+	private Boolean enabled;
+
 	@Enumerated(EnumType.STRING)
 	private StatoUtente stato;
-	
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "USERS_AUTHORITIES", joinColumns = {
 			@JoinColumn(name = "USER_USERNAME", referencedColumnName = "USERNAME") }, inverseJoinColumns = {
@@ -77,6 +80,14 @@ public class User {
 
 	public void setStato(StatoUtente stato) {
 		this.stato = stato;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public List<Authority> getAuthorities() {
