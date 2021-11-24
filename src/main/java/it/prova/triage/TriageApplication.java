@@ -61,6 +61,8 @@ public class TriageApplication {
 				List<Authority> authorities = Arrays.asList(new Authority[] { authorityAdmin, authoritySubOperator });
 		
 				user = new User();
+				user.setNome("Gabriele");
+				user.setCognome("lol");
 				user.setAuthorities(authorities);
 				user.setEnabled(true);
 				user.setUsername("admin");
@@ -89,6 +91,8 @@ public class TriageApplication {
 				List<Authority> authorities = Arrays.asList(new Authority[] { authorityUser });
 		
 				subOperator = new User();
+				subOperator.setNome("Claudio");
+				subOperator.setCognome("Bisio");
 				subOperator.setAuthorities(authorities);
 				subOperator.setEnabled(true);
 				subOperator.setUsername("commonUser");

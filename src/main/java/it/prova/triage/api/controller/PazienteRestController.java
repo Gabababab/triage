@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import it.prova.triage.dto.PazienteDTO;
 import it.prova.triage.exceptions.PazienteNotDimessoException;
 import it.prova.triage.exceptions.PazienteNotFoundException;
@@ -77,11 +79,14 @@ public class PazienteRestController {
 		if(pazienteToUpdate == null)
 			throw new PazienteNotFoundException("Paziente non presente");
 		
-		pazienteToUpdate.setCodiceFiscale(pazienteInput.getCodiceFiscale());
-		pazienteToUpdate.setNome(pazienteInput.getNome());
-		pazienteToUpdate.setCognome(pazienteInput.getCognome());
-		pazienteToUpdate.setDottore(pazienteInput.getDottore());
-		pazienteToUpdate.setStato(pazienteInput.getStato());
+		if(pazienteInput.getCodiceFiscale()!=null)
+			pazienteToUpdate.setCodiceFiscale(pazienteInput.getCodiceFiscale());
+		if(pazienteInput.getNome()!=null)
+			pazienteToUpdate.setNome(pazienteInput.getNome());
+		if(pazienteInput.getCognome()!=null)
+			pazienteToUpdate.setCognome(pazienteInput.getCognome());
+		if(pazienteInput.getStato()!=null)
+			pazienteToUpdate.setStato(pazienteInput.getStato());
 		return pazienteService.save(pazienteToUpdate);
 	}
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.triage.exceptions.UserAlreadyDisabledException;
 import it.prova.triage.exceptions.UserNotFoundException;
@@ -22,6 +25,8 @@ import it.prova.triage.model.User;
 import it.prova.triage.model.StatoUtente;
 import it.prova.triage.service.UserService;
 
+@RestController
+@RequestMapping(value = "/api/user", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class UserRestController {
 
 	@Autowired
@@ -62,17 +67,22 @@ public class UserRestController {
 		return userService.save(userInput);
 	}
 
-	@PutMapping("/{id}")
-	public User updateUser(@RequestBody User userInput, @PathVariable Long id) {
+	@PutMapping("/{username}")
+	public User updateUser(@RequestBody User userInput, @PathVariable String username) {
 
-		User userToUpdate = userService.get(id);
+		User userToUpdate = userService.findByUsername(username);
 
 		if (userToUpdate == null)
 			throw new UserNotFoundException("User non presente");
 
-		userToUpdate.setUsername(userInput.getUsername());
-		userToUpdate.setEmail(userInput.getEmail());
+		if(userInput.getNome()!=null)
+			userToUpdate.setNome(userInput.getNome());
+		if(userInput.getCognome()!=null)
+			userToUpdate.setCognome(userInput.getCognome());
+		if(userInput.getEmail()!=null)
+			userToUpdate.setEmail(userInput.getEmail());
 		userToUpdate.setStato(userInput.getStato());
+		
 		return userService.save(userToUpdate);
 	}
 

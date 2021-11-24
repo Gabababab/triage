@@ -1,6 +1,7 @@
 package it.prova.triage.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
@@ -17,4 +18,6 @@ public interface UserService {
 	User save(User input);
 
 	void delete(User input);
+	
+	User findByUsername(String username);
 }

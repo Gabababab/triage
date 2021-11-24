@@ -30,7 +30,15 @@ public class DottoreRequestDTO {
 		this.codiceDipendente = codiceDipendente;
 	}
 
-	public DottoreRequestDTO(String nome, String cognome, String codiceDipendente, PazienteDTO pazienteAttualmenteInVisita) {
+	public DottoreRequestDTO(String nome, String cognome, String codiceDipendente) {
+		super();
+		this.nome = nome;
+		this.cognome = cognome;
+		this.codiceDipendente = codiceDipendente;
+	}
+
+	public DottoreRequestDTO(String nome, String cognome, String codiceDipendente,
+			PazienteDTO pazienteAttualmenteInVisita) {
 		super();
 		this.nome = nome;
 		this.cognome = cognome;

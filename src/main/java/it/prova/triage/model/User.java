@@ -32,6 +32,14 @@ public class User {
 	@Size(min = 4, max = 100)
 	private String password;
 
+	@Column(name = "nome")
+	@NotBlank
+	private String nome;
+
+	@Column(name = "cognome")
+	@NotBlank
+	private String cognome;
+
 	@NotBlank
 	@Size(max = 50)
 	@Email
@@ -84,6 +92,22 @@ public class User {
 
 	public Boolean getEnabled() {
 		return enabled;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getCognome() {
+		return cognome;
+	}
+
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
 	}
 
 	public void setEnabled(Boolean enabled) {

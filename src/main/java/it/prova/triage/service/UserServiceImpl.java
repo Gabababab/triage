@@ -2,6 +2,7 @@ package it.prova.triage.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.Predicate;
 
@@ -43,6 +44,12 @@ public class UserServiceImpl implements UserService{
 
 			if (!StringUtils.isEmpty(userExample.getEmail()))
 				predicates.add(cb.like(cb.upper(root.get("email")), "%" + userExample.getEmail().toUpperCase() + "%"));
+			
+			if (!StringUtils.isEmpty(userExample.getNome()))
+				predicates.add(cb.like(cb.upper(root.get("nome")), "%" + userExample.getNome().toUpperCase() + "%"));
+			
+			if (!StringUtils.isEmpty(userExample.getCognome()))
+				predicates.add(cb.like(cb.upper(root.get("cognome")), "%" + userExample.getCognome().toUpperCase() + "%"));
 
 			if (userExample.getEnabled())
 				predicates.add(cb.isTrue(root.get("enabled")));
@@ -74,5 +81,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void delete(User input) {
 		userRepository.delete(input);
+	}
+
+	@Override
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username).orElse(null);
 	}
 }

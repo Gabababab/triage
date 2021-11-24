@@ -1,5 +1,6 @@
 package it.prova.triage.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,8 @@ public class Dottore {
 	@Column(name = "codiceDipendente")
 	private String codiceDipendente;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "paziente_id", referencedColumnName = "id")
 	private Paziente pazienteAttualmenteInVisita;
 
 	public Dottore() {
