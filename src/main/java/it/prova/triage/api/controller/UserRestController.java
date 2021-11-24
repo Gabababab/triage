@@ -23,15 +23,19 @@ import it.prova.triage.model.StatoUtente;
 import it.prova.triage.service.UserService;
 
 public class UserRestController {
-	
+
 	@Autowired
 	UserService userService;
 
 	@GetMapping("/{idInput}")
 	public User getUtente(@PathVariable(required = true) Long idInput) {
+
+		if (userService.get(idInput) == null)
+			throw new UserNotFoundException("User non presente");
+
 		return userService.get(idInput);
 	}
-	
+
 	@GetMapping
 	public List<User> getAll() {
 		return userService.listAll();
@@ -50,23 +54,22 @@ public class UserRestController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public User createNewUser(@RequestBody User userInput) {
-		
+
 		if (!userInput.getUsername().isEmpty())
 			throw new RuntimeException("Non è ammesso fornire un id per la creazione");
-		
-		
+
 		userInput.setStato(StatoUtente.CREATO);
 		return userService.save(userInput);
 	}
 
 	@PutMapping("/{id}")
 	public User updateUser(@RequestBody User userInput, @PathVariable Long id) {
-		
+
 		User userToUpdate = userService.get(id);
-		
-		if(userToUpdate == null)
+
+		if (userToUpdate == null)
 			throw new UserNotFoundException("User non presente");
-		
+
 		userToUpdate.setUsername(userInput.getUsername());
 		userToUpdate.setEmail(userInput.getEmail());
 		userToUpdate.setStato(userInput.getStato());
@@ -75,11 +78,13 @@ public class UserRestController {
 
 	@DeleteMapping("/{id}")
 	public void deleteUser(@PathVariable(required = true) Long id) {
-		
-		if(!userService.get(id).getStato().equals(StatoUtente.DISABILITATO))
+
+		if (!userService.get(id).getStato().equals(StatoUtente.DISABILITATO))
 			throw new UserAlreadyDisabledException("User già disabilitato");
-		
-		
+
+		if (userService.get(id) == null)
+			throw new UserNotFoundException("User non presente");
+
 		userService.get(id).setStato(StatoUtente.DISABILITATO);
 	}
 }
