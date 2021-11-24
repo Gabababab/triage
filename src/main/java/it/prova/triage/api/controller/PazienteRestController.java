@@ -17,9 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import it.prova.triage.dto.DottoreDTO;
+import it.prova.triage.dto.DottoreResponseDTO;
+import it.prova.triage.dto.PazienteDTO;
 import it.prova.triage.exceptions.PazienteNotFoundException;
+import it.prova.triage.model.Dottore;
 import it.prova.triage.model.Paziente;
+import it.prova.triage.model.StatoPaziente;
+import it.prova.triage.service.DottoreService;
 import it.prova.triage.service.PazienteService;
 
 @RestController
@@ -29,9 +36,41 @@ public class PazienteRestController {
 	@Autowired
 	PazienteService pazienteService;
 	
+	@Autowired
+	DottoreService dottoreService;
+	
+	@Autowired
+	private WebClient webClient;
+	
 	@GetMapping("/{idInput}")
 	public Paziente getPaziente(@PathVariable(required = true) Long idInput) {
 		return pazienteService.get(idInput);
+	}
+	
+	@GetMapping("/verificapaziente/{idInput}")
+	public PazienteDTO verificaPaziente(@PathVariable(value="id", required = true) Long idInput) {
+		
+		Paziente pazienteModel = pazienteService.get(idInput);
+
+		// ora invoco il sistema esterno per capire se il dipendente ha una posizione
+		// previdenziale
+		// nel caso affermativo valorizzo apposito campo
+		// il block significa agire in maniera sincrona, attendendo la risposta
+		DottoreResponseDTO dottoreResponseDTO = webClient.get()
+				.uri("/" + pazienteModel.getId())
+				.retrieve()
+				.bodyToMono(DottoreResponseDTO.class)
+				.block();
+
+		PazienteDTO result = PazienteDTO.buildPazienteDTOFromModel(pazienteModel);
+
+		if (dottoreResponseDTO != null
+				&& dottoreResponseDTO.getPazienteAttualmenteInVisita().getId().equals(result.getId()))
+			result.setDottore(DottoreDTO.buildDottoreDTOFromModel(dottoreService.get(dottoreResponseDTO.getId())));
+
+		return result;
+		
+//		return pazienteService.get(idInput);
 	}
 
 	@GetMapping
@@ -51,6 +90,7 @@ public class PazienteRestController {
 
 	@PostMapping
 	public Paziente createNewPaziente(@RequestBody Paziente pazienteInput) {
+		pazienteInput.setStato(StatoPaziente.IN_ATTESA_VISITA);
 		return pazienteService.save(pazienteInput);
 	}
 
@@ -72,6 +112,9 @@ public class PazienteRestController {
 
 	@DeleteMapping("/{id}")
 	public void deletePaziente(@PathVariable(required = true) Long id) {
+		if(!pazienteService.get(id).getStato().equals(StatoPaziente.DIMESSO))
+			throw new PazienteNotFoundException("Paziente non dimesso");
+			
 		pazienteService.delete(pazienteService.get(id));
 	}
 }

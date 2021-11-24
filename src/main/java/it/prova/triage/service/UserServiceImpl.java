@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 import it.prova.triage.exceptions.UserNotFoundException;
 import it.prova.triage.model.User;
-import it.prova.triage.repository.UserRepository;
+import it.prova.triage.security.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService{
