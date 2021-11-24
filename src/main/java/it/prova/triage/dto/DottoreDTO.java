@@ -1,5 +1,7 @@
 package it.prova.triage.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import it.prova.triage.model.Dottore;
 
 public class DottoreDTO {
@@ -8,6 +10,7 @@ public class DottoreDTO {
 	private String nome;
 	private String cognome;
 	private String codiceDipendente;
+	@JsonIgnoreProperties(value = { "dottore" })
 	private PazienteDTO pazienteAttualmenteInVisita;
 
 	public DottoreDTO() {

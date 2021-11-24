@@ -1,11 +1,14 @@
 package it.prova.triage.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 public class DottoreResponseDTO {
 
 	private Long id;
 	private String nome;
 	private String cognome;
 	private String codiceDipendente;
+	@JsonIgnoreProperties(value = { "dottore" })
 	private PazienteDTO pazienteAttualmenteInVisita;
 	private boolean inServizio;
 	private boolean inVisita;
