@@ -10,6 +10,8 @@ public class DottoreRequestDTO {
 	private String codiceDipendente;
 	@JsonIgnoreProperties(value = { "dottore" })
 	private PazienteDTO pazienteAttualmenteInVisita;
+	private boolean inServizio;
+	private boolean inVisita;
 
 	public DottoreRequestDTO() {
 		super();
@@ -68,6 +70,22 @@ public class DottoreRequestDTO {
 
 	public PazienteDTO getPazienteAttualmenteInVisita() {
 		return pazienteAttualmenteInVisita;
+	}
+
+	public boolean isInServizio() {
+		return inServizio;
+	}
+
+	public void setInServizio(boolean inServizio) {
+		this.inServizio = inServizio;
+	}
+
+	public boolean isInVisita() {
+		return inVisita;
+	}
+
+	public void setInVisita(boolean inVisita) {
+		this.inVisita = inVisita;
 	}
 
 	public void setPazienteAttualmenteInVisita(PazienteDTO pazienteAttualmenteInVisita) {
