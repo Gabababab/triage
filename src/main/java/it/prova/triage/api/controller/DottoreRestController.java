@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.triage.model.Dottore;
@@ -49,11 +50,13 @@ public class DottoreRestController {
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public Dottore createNewDottore(@RequestBody Dottore dottoreInput) {
 		return dottoreService.save(dottoreInput);
 	}
 
 	@PutMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
 	public Dottore updateDottore(@RequestBody Dottore dottoreInput, @PathVariable Long id) {
 		Dottore dottoreToUpdate = dottoreService.get(id);
 		dottoreToUpdate.setNome(dottoreInput.getNome());
@@ -64,6 +67,7 @@ public class DottoreRestController {
 	}
 
 	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
 	public void deleteDottore(@PathVariable(required = true) Long id) {
 		dottoreService.delete(dottoreService.get(id));
 	}

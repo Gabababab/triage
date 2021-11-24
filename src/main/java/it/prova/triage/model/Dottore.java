@@ -28,7 +28,6 @@ public class Dottore {
 	private String codiceDipendente;
 
 	@OneToOne
-	@JoinColumn(name = "pazienteInVisita_id", referencedColumnName = "id")
 	private Paziente pazienteAttualmenteInVisita;
 
 	public Dottore() {

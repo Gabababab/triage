@@ -30,8 +30,8 @@ public class Paziente {
 	@Column(name = "stato")
 	private StatoPaziente stato;
 
-    @OneToOne(mappedBy = "pazienteInVisita_id")
-    private Dottore dottore;
+	@OneToOne
+	private Dottore dottore;
 
 	public Paziente() {
 		super();
@@ -45,6 +45,14 @@ public class Paziente {
 		this.codiceFiscale = codiceFiscale;
 		this.stato = stato;
 		this.dottore = dottore;
+	}
+
+	public Paziente(String nome, String cognome, String codiceFiscale, StatoPaziente stato) {
+		super();
+		this.nome = nome;
+		this.cognome = cognome;
+		this.codiceFiscale = codiceFiscale;
+		this.stato = stato;
 	}
 
 	public Long getId() {
