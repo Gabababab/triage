@@ -23,8 +23,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import it.prova.triage.dto.DottoreDTO;
 import it.prova.triage.dto.DottoreRequestDTO;
 import it.prova.triage.dto.DottoreResponseDTO;
+import it.prova.triage.exceptions.DottoreNotFoundException;
+import it.prova.triage.exceptions.DottoreOccupatoException;
+import it.prova.triage.exceptions.PazienteNotFoundException;
 import it.prova.triage.model.Dottore;
+import it.prova.triage.model.Paziente;
 import it.prova.triage.service.DottoreService;
+import it.prova.triage.service.PazienteService;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -33,7 +38,10 @@ public class DottoreRestController {
 
 	@Autowired
 	private DottoreService dottoreService;
-	
+
+	@Autowired
+	private PazienteService pazienteService;
+
 	@Autowired
 	private WebClient webClient;
 
@@ -57,10 +65,44 @@ public class DottoreRestController {
 		return new ResponseEntity<Page<Dottore>>(results, new HttpHeaders(), HttpStatus.OK);
 	}
 
+	@PostMapping("/assegnapaziente")
+	public void assegnaPazienteADottore(@RequestParam String codiceFiscale, @RequestParam String codiceDipendente) {
+
+		Paziente pazienteAssegnazione = pazienteService.findByCodiceFiscale(codiceFiscale);
+		Dottore dottoreAssegnazione=dottoreService.findByCodice(codiceDipendente);
+		
+		if(pazienteAssegnazione==null)
+			throw new PazienteNotFoundException("Paziente non trovato");
+		if(dottoreAssegnazione==null)
+			throw new DottoreNotFoundException("Dottore non trovato");
+		
+		ResponseEntity<DottoreResponseDTO> response = webClient.get()
+				.uri(uriBuilder -> uriBuilder.path("/verifica/{codiceDipendente}").build(codiceDipendente)).retrieve()
+				.toEntity(DottoreResponseDTO.class).block();
+
+		DottoreResponseDTO dottoreResponse = response.getBody();
+		if (!dottoreResponse.isInServizio() || dottoreResponse.isInVisita())
+			throw new DottoreOccupatoException("dottore non disponibil");
+
+		ResponseEntity<DottoreResponseDTO> responseModifica = webClient.post().uri("/impostaInVisita")
+				.body(Mono.just(new DottoreRequestDTO(dottoreAssegnazione.getCodiceDipendente())), DottoreRequestDTO.class)
+				.retrieve().toEntity(DottoreResponseDTO.class).block();
+
+		if (responseModifica.getStatusCode() != HttpStatus.OK)
+			throw new RuntimeException("Errore in verifica");
+
+		pazienteAssegnazione.setDottore(dottoreAssegnazione);
+		dottoreAssegnazione.setPazienteAttualmenteInVisita(pazienteAssegnazione);
+		pazienteService.save(pazienteAssegnazione);
+		dottoreService.save(dottoreAssegnazione);
+
+		return;
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public DottoreDTO createNewDottore(@RequestBody DottoreDTO dottoreInput) {
-		
+
 		ResponseEntity<DottoreResponseDTO> response = webClient.post().uri("")
 				.body(Mono.just(new DottoreRequestDTO(dottoreInput.getNome(), dottoreInput.getCognome(),
 						dottoreInput.getCodiceDipendente())), DottoreRequestDTO.class)
@@ -78,15 +120,16 @@ public class DottoreRestController {
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Dottore updateDottore(@RequestBody Dottore dottoreInput, @PathVariable Long id) {
+
 		Dottore dottoreToUpdate = dottoreService.get(id);
-		
-		if(dottoreInput.getNome()!=null)
+
+		if (dottoreInput.getNome() != null)
 			dottoreToUpdate.setNome(dottoreInput.getNome());
-		if(dottoreInput.getCognome()!=null)
+		if (dottoreInput.getCognome() != null)
 			dottoreToUpdate.setCognome(dottoreInput.getCognome());
-		if(dottoreInput.getCodiceDipendente()!=null)
+		if (dottoreInput.getCodiceDipendente() != null)
 			dottoreToUpdate.setCodiceDipendente(dottoreInput.getCodiceDipendente());
-		
+
 		return dottoreService.save(dottoreToUpdate);
 	}
 

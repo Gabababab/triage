@@ -76,4 +76,9 @@ public class PazienteServiceImpl implements PazienteService{
 	public void delete(Paziente input) {
 		pazienteRepository.delete(input);
 	}
+
+	@Override
+	public Paziente findByCodiceFiscale(String cf) {
+		return pazienteRepository.findByCodiceFiscale(cf);
+	}
 }

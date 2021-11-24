@@ -32,13 +32,13 @@ public class UserRestController {
 	@Autowired
 	UserService userService;
 
-	@GetMapping("/{idInput}")
-	public User getUtente(@PathVariable(required = true) Long idInput) {
+	@GetMapping("/{username}")
+	public User getUtente(@PathVariable(required = true) String username) {
 
-		if (userService.get(idInput) == null)
+		if (userService.findByUsername(username) == null)
 			throw new UserNotFoundException("User non presente");
 
-		return userService.get(idInput);
+		return userService.findByUsername(username);
 	}
 
 	@GetMapping
