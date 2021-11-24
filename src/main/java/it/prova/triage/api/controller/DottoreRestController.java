@@ -24,7 +24,7 @@ import it.prova.triage.dto.DottoreDTO;
 import it.prova.triage.dto.DottoreRequestDTO;
 import it.prova.triage.dto.DottoreResponseDTO;
 import it.prova.triage.exceptions.DottoreNotFoundException;
-import it.prova.triage.exceptions.DottoreOccupatoException;
+import it.prova.triage.exceptions.DottoreNotDisponibileException;
 import it.prova.triage.exceptions.PazienteNotFoundException;
 import it.prova.triage.model.Dottore;
 import it.prova.triage.model.Paziente;
@@ -82,7 +82,7 @@ public class DottoreRestController {
 
 		DottoreResponseDTO dottoreResponse = response.getBody();
 		if (!dottoreResponse.isInServizio() || dottoreResponse.isInVisita())
-			throw new DottoreOccupatoException("dottore non disponibil");
+			throw new DottoreNotDisponibileException("dottore non disponibil");
 
 		ResponseEntity<DottoreResponseDTO> responseModifica = webClient.post().uri("/impostaInVisita")
 				.body(Mono.just(new DottoreRequestDTO(dottoreAssegnazione.getCodiceDipendente())), DottoreRequestDTO.class)

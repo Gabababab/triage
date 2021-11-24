@@ -39,6 +39,15 @@ public class PazienteDTO {
 		this.dottore = dottore;
 	}
 
+	public PazienteDTO(Long id, String nome, String cognome, String codiceFiscale, StatoPaziente stato) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.codiceFiscale = codiceFiscale;
+		this.stato = stato;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -94,7 +103,7 @@ public class PazienteDTO {
 
 	public static PazienteDTO buildPazienteDTOFromModel(Paziente input) {
 		return new PazienteDTO(input.getId(), input.getNome(), input.getCognome(), input.getCodiceFiscale(),
-				input.getStato(), DottoreDTO.buildDottoreDTOFromModel(input.getDottore()));
+				input.getStato());
 	}
 
 }

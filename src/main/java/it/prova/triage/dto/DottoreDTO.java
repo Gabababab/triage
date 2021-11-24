@@ -84,12 +84,11 @@ public class DottoreDTO {
 	}
 
 	public Dottore buildDottoreModel() {
-		return new Dottore(this.id, this.nome, this.cognome, this.codiceDipendente, this.pazienteAttualmenteInVisita.buildPazienteModel());
+		return new Dottore(this.id, this.nome, this.cognome, this.codiceDipendente);
 	}
 
 	public static DottoreDTO buildDottoreDTOFromModel(Dottore input) {
-		return new DottoreDTO(input.getId(), input.getNome(), input.getCognome(), input.getCodiceDipendente(),
-			PazienteDTO.buildPazienteDTOFromModel(	input.getPazienteAttualmenteInVisita()));
+		return new DottoreDTO(input.getId(), input.getNome(), input.getCognome(), input.getCodiceDipendente());
 	}
 
 }
